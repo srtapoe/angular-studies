@@ -26,12 +26,30 @@
                 <td>{{contato.operadora.nome}}</td>
             </tr>
         </table>
-        <input type="text" placeholder="Nome" ng-model="contato.nome">
-        <input type="text" placeholder="Telefone" ng-model="contato.telefone">
+        <form name="contatoForm">
+        <input type="text" placeholder="Nome" ng-model="contato.nome" name="nome" ng-required="true" ng-minlength="3">
+        <input type="text" placeholder="Telefone" ng-model="contato.telefone" name="telefone" ng-required="true" ng-minlength="8" ng-pattern="/^\d{4,5}-\d{4}$/">
         <select ng-model="contato.operadora" ng-options="operadora.nome group by operadora.categoria for operadora in operadoras">
             <option value="">Selecione uma operadora...</option>
         </select>
-        <button class="btn btn-dark" ng-click="adicionarContato(contato)" ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+    </form>
+        <div ng-show="contatoForm.nome.$invalid && contatoForm.nome.$dirty" class="alert alert-danger">
+                Por favor, nome precisa ser preenchido!
+        </div>
+        <div ng-show="contatoForm.nome.$error.minlength" class="alert alert-danger">
+           Nome tem capacidade mínima de 3 caracteres!
+    </div>
+        <div ng-show="contatoForm.telefone.$invalid && contatoForm.telefone.$dirty" class="alert alert-danger">
+            Por favor, telefone precisa ser preenchido!
+    </div>
+</div>
+    <div ng-show="contatoForm.telefone.$error.minlength" class="alert alert-danger">
+        Telefone precisa ser 00000-0000
+    </div>
+    <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+        Telefone precisa ser 0000-0000
+    </div>
+        <button class="btn btn-dark" ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
         <button class="btn btn-danger" ng-click="excluirContato(contatos)" ng-show="isContatoSelecionado(contatos)">Excluir Contato</button>
 
 
@@ -57,6 +75,7 @@
                 $scope.adicionarContato = function (contato) {
                     $scope.contatos.push(angular.copy(contato));
                     delete $scope.contato;
+                    $scope.contatoForm.$setPristine();
                 };
 
                 $scope.excluirContato = function (contatos) {
