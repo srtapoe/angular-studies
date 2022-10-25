@@ -29,3 +29,11 @@ th{
 td{
     text-align: center;
 }
+
+.selecionado{
+    background-color: burlywood;
+}
+
+.negrito{
+    font-weight: bold;
+}
